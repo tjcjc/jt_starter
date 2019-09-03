@@ -33,7 +33,7 @@ class MyCLI < Thor
     include Thor::Shell
     include Thor::Actions
 
-    desc "start ci", "start a process to init ci files, options: is_p: project not pod"
+    desc "run", "start a process to init ci files, options: is_p: project not pod"
     long_desc <<-LONGDESC
         start a process to init ci files,
         options:
@@ -42,7 +42,7 @@ class MyCLI < Thor
     LONGDESC
     option :is_p, type: :boolean
     option :is_public, type: :boolean
-    def command
+    def run
         is_p = options[:is_p]
         unless is_p
             is_p = yes?("Is a project not pod?")
