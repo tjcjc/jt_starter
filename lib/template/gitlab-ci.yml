@@ -1,0 +1,28 @@
+# * https://jasontaiworkspace.slack.com/apps/A0F7XDUAZ-incoming-webhooks?next_id=0
+# * doc: https://docs.gitlab.com/ee/user/project/pages/getting_started_part_four.html
+# * DANGER_GITLAB_API_TOKEN
+before_script:
+  - export LANG=en_US.UTF-8
+  - export LANGUAGE=en_US:en
+  - export LC_ALL=en_US.UTF-8
+  - bundle install
+  - mkdir -p test_output
+
+stages:
+  - test
+
+job:
+  stage: test
+  script:
+{{#is_pod}}
+    - cp Example/Podfile .
+    - pod install --project-directory=Example
+{{/is_pod}}
+{{^is_pod}}
+    - pod install
+{{/is_pod}}
+    - bundle exec fastlane ci_test
+    - bundle exec danger --dangerfile=DangerfileGitlab
+  artifacts:
+    reports:
+      junit: test_output/*.xml

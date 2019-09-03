@@ -1,0 +1,42 @@
+# references:
+# * https://www.objc.io/issues/6-build-tools/travis-ci/
+# * https://github.com/supermarin/xcpretty#usage
+# * https://jasontaiworkspace.slack.com/apps/A0F81FP4N-travis-ci?next_id=0
+# * https://docs.travis-ci.com/user/tutorial/
+# * DANGER_GITHUB_API_TOKEN
+
+osx_image: xcode11
+language: objective-c
+# xcode_workspace: Example/MDictParser.xcworkspace
+# xcode_scheme: platform=iOS Simulator,name=iPhone Xʀ,OS=13.0
+
+# cache: cocoapods
+{{#is_pod}}
+podfile: Example/Podfile
+{{/is_pod}}
+{{^is_pod}}
+podfile: Podfile
+{{/is_pod}}
+before_install:
+- gem install cocoapods # Since Travis is not always on latest version
+{{#is_pod}}
+- pod install --project-directory=Example
+{{/is_pod}}
+{{^is_pod}}
+- pod install
+{{/is_pod}}
+- bundle install
+- mkdir -p test_output
+script:
+- bundle exec fastlane ci_test
+- bundle exec danger
+- pod lib lint --allow-warnings --sources=https://github.com/{{nickname}}/Specs.git,https://github.com/CocoaPods/Specs.git
+after_success:
+- bash <(curl -s https://codecov.io/bash) -t {{codecov_key}}
+- echo $TRAVIS_BRANCH
+{{#is_pod}}
+- ruby .travis/publish.rb
+{{/is_pod}}
+notifications:
+  slack: jasontaiworkspace:{{slack_key}}
+  email: false
