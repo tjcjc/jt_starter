@@ -18,19 +18,19 @@ podfile: Example/Podfile
 podfile: Podfile
 {{/is_pod}}
 before_install:
-- gem install cocoapods # Since Travis is not always on latest version
 {{#is_pod}}
 - pod install --project-directory=Example
 {{/is_pod}}
 {{^is_pod}}
 - pod install
 {{/is_pod}}
-- bundle install
 - mkdir -p test_output
 script:
 - bundle exec fastlane ci_test
 - bundle exec danger
+{{#is_pod}}
 - pod lib lint --allow-warnings --sources=https://github.com/{{nickname}}/Specs.git,https://github.com/CocoaPods/Specs.git
+{{/is_pod}}
 after_success:
 - bash <(curl -s https://codecov.io/bash) -t {{codecov_key}}
 - echo $TRAVIS_BRANCH
