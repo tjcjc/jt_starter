@@ -38,5 +38,5 @@ after_success:
 - ruby .travis/publish.rb
 {{/is_pod}}
 notifications:
-  slack: jasontaiworkspace:{{slack_key}}
+  slack: $SLACK_KEY
   email: false

@@ -86,6 +86,7 @@ class MyCLI < Thor
     def create_ci_file(is_public, is_project, nickname, project_name)
         create_file("Gemfile", FileTemplate.render_template("Gemfile.rb"))
         if is_public
+            create_file("README.md", FileTemplate.render_template("README.md"))
             say("we need your codecov project key", :green)
             say("get your key form this url", :green)
             say("https://codecov.io/gh/#{nickname}/#{project_name}/settings", :yellow)
