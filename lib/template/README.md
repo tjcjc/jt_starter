@@ -1,6 +1,6 @@
 # {{project_name}}
 
-[![CI Status](https://img.shields.io/travis/{{nickname}}/{{project_name}}.svg?style=flat)](https://travis-ci.org/{{tjcjc}}/{{project_name}})
+[![CI Status](https://img.shields.io/travis/{{nickname}}/{{project_name}}.svg?style=flat)](https://travis-ci.org/{{nickname}}/{{project_name}})
 [![codecov](https://codecov.io/gh/{{nickname}}/{{project_name}}/branch/master/graph/badge.svg)](https://codecov.io/gh/{{nickname}}/{{project_name}})
 
 ## Example
