@@ -16,10 +16,19 @@ included:
   {{#is_pod}}
   - {{project_name}}/Classes
   {{/is_pod}}
+  {{^is_pod}}
+  - {{project_name}}
+  - {{project_name}}Tests
+  - {{project_name}}UITests
+  {{/is_pod}}
 
 excluded:
   {{#is_pod}}
   - Example
+  {{/is_pod}}
+  {{^is_pod}}
+  - Pods
+  - vendor
   {{/is_pod}}
 
 function_body_length:
