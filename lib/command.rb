@@ -33,7 +33,7 @@ class MyCLI < Thor
     include Thor::Shell
     include Thor::Actions
 
-    desc "start", "start a process to init ci files, options: is_public: project is public"
+    desc "start_py", "start a process to init ci files, options: is_public: project is public"
     long_desc <<-LONGDESC
         start a process to init ci files,
         options:
@@ -53,8 +53,8 @@ class MyCLI < Thor
         project_name = ask("project: ")
 
         template_path = "#{Pathname.new(File.dirname(__FILE__)).realpath}/template"
-        FileTemplate.config(template_path, project_name, !is_p, is_public, nickname)
-        create_github_action_file(is_public, nickname, project_name)
+        FileTemplate.config(template_path, project_name, false, is_public, nickname)
+        create_github_action_file(is_public, nickname, project_name, template_path)
     end
 
     desc "start", "start a process to init ci files, options: is_p: project not pod"
@@ -107,7 +107,7 @@ class MyCLI < Thor
     end
 
     private
-    def create_github_action_file(is_public, nickname, project_name)
+    def create_github_action_file(is_public, nickname, project_name, template_path)
         create_file("Gemfile.rb", FileTemplate.render_template("Gemfile_py.rb"))
         say("we need your codecov project key", :green)
         say("get your upload key form this url", :green)
@@ -127,7 +127,8 @@ class MyCLI < Thor
         say("https://github.com/#{nickname}/#{project_name}/settings/secrets/new", :yellow)
         create_file("Dangerfile.rb", FileTemplate.render_template("Dangerfile-py.rb"))
         empty_directory(".github/workflows")
-        create_file(".github/workflows/main.yml", FileTemplate.render_template("github/workflows/main.yml"))
+        MyCLI.source_root(template_path)
+        copy_file("github/workflows/main.yml", ".github/workflows/main.yml")
     end
 
     def create_ci_file(is_public, is_project, nickname, project_name)
