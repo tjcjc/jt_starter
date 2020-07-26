@@ -33,6 +33,30 @@ class MyCLI < Thor
     include Thor::Shell
     include Thor::Actions
 
+    desc "start", "start a process to init ci files, options: is_public: project is public"
+    long_desc <<-LONGDESC
+        start a process to init ci files,
+        options:
+            --is_public option: publish project
+    LONGDESC
+    option :is_public, type: :boolean
+    def start_py
+        is_public = options[:is_public]
+        unless is_public
+            is_public = yes?("Is a public project?")
+        end
+        
+        say("we need your github or gitlab nickname", :green)
+        nickname = ask("Nickname: ")
+
+        say("we need your project name", :green)
+        project_name = ask("project: ")
+
+        template_path = "#{Pathname.new(File.dirname(__FILE__)).realpath}/template"
+        FileTemplate.config(template_path, project_name, !is_p, is_public, nickname)
+        create_github_action_file(is_public, nickname, project_name)
+    end
+
     desc "start", "start a process to init ci files, options: is_p: project not pod"
     long_desc <<-LONGDESC
         start a process to init ci files,
@@ -83,6 +107,29 @@ class MyCLI < Thor
     end
 
     private
+    def create_github_action_file(is_public, nickname, project_name)
+        create_file("Gemfile.rb", FileTemplate.render_template("Gemfile_py.rb"))
+        say("we need your codecov project key", :green)
+        say("get your upload key form this url", :green)
+        say("https://codecov.io/gh/#{nickname}/#{project_name}/settings", :yellow)
+        while !yes?("finished it?")
+        end
+        say("Add this key to github project setting as a secret, named [CODECOV_SECRET]", :green)
+        say("https://github.com/#{nickname}/#{project_name}/settings/secrets/new", :yellow)
+        create_file("README.md", FileTemplate.render_template("README.md"))
+        create_file(".pylintrc", FileTemplate.render_template("pylintrc"))
+        create_file("environment.yml", FileTemplate.render_template("environment.yml"))
+        say("you need create a personal access tokin in github setting, click the link below", :green)
+        say("https://github.com/settings/tokens/new", :yellow)
+        while !yes?("finished it?")
+        end
+        say("Add this token to github project setting as a secret, named [REPORT_TOKEN]", :green)
+        say("https://github.com/#{nickname}/#{project_name}/settings/secrets/new", :yellow)
+        create_file("Dangerfile.rb", FileTemplate.render_template("Dangerfile-py.rb"))
+        empty_directory(".github/workflows")
+        create_file(".github/workflows/main.yml", FileTemplate.render_template("github/workflows/main.yml"))
+    end
+
     def create_ci_file(is_public, is_project, nickname, project_name)
         create_file("Gemfile", FileTemplate.render_template("Gemfile.rb"))
         if is_public

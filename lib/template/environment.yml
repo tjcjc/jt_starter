@@ -1,0 +1,11 @@
+name: test
+channels:
+  - conda-forge
+dependencies:
+  - pip>=20.0.2
+  - markdown>=3.1.1
+  - pylint>=2.5.3
+  - pytest>=5.4.3
+  - pytest-cov>=2.10.0
+  - pip:
+    - pylint_junit

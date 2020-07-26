@@ -1,0 +1,4 @@
+[MASTER]
+load-plugins=pylint_junit
+[REPORTS]
+output-format=junit
