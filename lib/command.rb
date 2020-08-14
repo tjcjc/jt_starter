@@ -45,7 +45,7 @@ class MyCLI < Thor
         unless is_public
             is_public = yes?("Is a public project?")
         end
-        
+
         say("we need your github or gitlab nickname", :green)
         nickname = ask("Nickname: ")
 
@@ -119,6 +119,7 @@ class MyCLI < Thor
         create_file("README.md", FileTemplate.render_template("README.md"))
         create_file(".pylintrc", FileTemplate.render_template("pylintrc"))
         create_file("environment.yml", FileTemplate.render_template("environment.yml"))
+        create_file(".gitignore", FileTemplate.render_template("py_gitignore"))
         say("you need create a personal access tokin in github setting, click the link below", :green)
         say("https://github.com/settings/tokens/new", :yellow)
         while !yes?("finished it?")
